@@ -35,6 +35,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -934,7 +935,12 @@ public class InAppBrowser extends CordovaPlugin {
                         // Create File Chooser Intent
                         Intent content = new Intent(Intent.ACTION_GET_CONTENT);
                         content.addCategory(Intent.CATEGORY_OPENABLE);
-                        content.setType("*/*");
+                        String type = TextUtils.join(",", fileChooserParams.getAcceptTypes());
+                        if (type.isEmpty()) {
+                            content.setType("*/*");
+                        } else {
+                            content.setType(TextUtils.join(",", fileChooserParams.getAcceptTypes()));
+                        }
 
                         // Run cordova startActivityForResult
                         cordova.startActivityForResult(InAppBrowser.this, Intent.createChooser(content, "Select File"), FILECHOOSER_REQUESTCODE);
